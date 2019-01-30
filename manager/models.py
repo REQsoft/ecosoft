@@ -5,48 +5,66 @@ from django.contrib.auth.models import User
 
 class Activity(models.Model):
     frequency_choices = (
-        ('daily', 'Diaria'),
-        ('weekly', 'Semanal'),
-        ('monthly', 'Mensual'),
-        ('unique', 'Unica')
+        ('Diaria', 'Diaria'),
+        ('Semanal', 'Semanal'),
+        ('Mensual', 'Mensual'),
+        ('Unica', 'Unica')
     )
 
-    states = (
-        ('1', 'Pendiente'),
-        ('2', 'En proceso'),
-        ('3', 'Terminado'),
+    estados = (
+        ('Pendiente', 'Pendiente'),
+        ('Terminado', 'Terminado'),
+        ('Expirado', 'Expirado'),
     )
 
-    name = models.CharField(max_length=30, unique=True)
-    responsible = models.ForeignKey(User, on_delete="PROTECTED")
-    description = models.TextField()
-    frequency = models.CharField(choices=frequency_choices, max_length=20)
-    date = models.DateTimeField()
-    state = models.CharField(choices=states, max_length=20, default='1')
+    nombre = models.CharField(max_length=30, unique=True)
+    responsable = models.ForeignKey(User, on_delete="PROTECTED")
+    descripcion = models.TextField()
+    fecha_inicio = models.DateTimeField()
+    fecha_terminacion = models.DateTimeField(blank=True, null=True)
+    frecuencia = models.CharField(choices=frequency_choices, max_length=20)
+    estado = models.CharField(choices=estados, max_length=20, default='Pendiente')
 
     class Meta:
-        verbose_name = 'Activity'
-        verbose_name_plural = 'Activities'
+        verbose_name = 'Actividad'
+        verbose_name_plural = 'Actividades'
 
     def __str__(self):
-        if self.state == '1':
-            state = self.states[0][1]
-        elif self.state == '2':
-            state = self.states[1][1]
-        else:
-            state = self.states[2][1]
-        return self.name + " ("+state+")"
-
+        return self.nombre + " ("+self.estado+")"
+        
 
 class Report(models.Model):
-    activity = models.OneToOneField(Activity, on_delete=models.CASCADE)
-    description = models.TextField()
-    date = models.DateTimeField()
+    actividad = models.ForeignKey(Activity, on_delete=models.CASCADE)
+    descripcion = models.TextField()
+    fecha_reporte = models.DateTimeField()
     
     class Meta:
-        verbose_name = 'Report'
-        verbose_name_plural = 'Reports'
+        verbose_name = 'Reporte'
+        verbose_name_plural = 'Reportes'
 
     def __str__(self):
-        return str(self.activity)
+        return str(self.actividad)
+
+
+class Pending(models.Model):
+    actividad = models.ForeignKey(Activity, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Actividad pendiente'
+        verbose_name_plural = 'Actividades pendientes'
+
+    def __str__(self):
+        return self.activity.nombre
+
+class Finish(models.Model):
+    actividad = models.ForeignKey(Activity, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Actividad terminada'
+        verbose_name_plural = 'Actividades terminadas'
+
+    def __str__(self):
+        return self.activity.nombre
+
+
 

@@ -25,7 +25,7 @@ SECRET_KEY = 'yebh&#*1e&uud3*lbh7aqeij@e0=4usvlc&px407g!!ul1bl3v'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -39,14 +39,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_adminlte',
     'django_adminlte_theme',
+    'graphene_django',
+    'django_graphiql',
     'manager',
 ]
+
+GRAPHENE = {
+    "SCHEMA": "ecosoft.schema.schema",
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
